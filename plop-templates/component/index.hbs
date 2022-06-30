@@ -1,0 +1,15 @@
+import React from 'react';
+import { Text } from 'react-native';
+
+import { Container } from './styles';
+import { {{ pascalCase name }}Props } from './types';
+
+const {{pascalCase name}}: React.FC<{{ pascalCase name }}Props> = (props) => {
+  return (
+    <Container>
+        <Text>{{name}}</Text>
+    </Container>
+  );
+}
+
+export default {{pascalCase name}};
