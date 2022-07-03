@@ -7,7 +7,7 @@ import {
 import React, { useCallback, useEffect, useState } from "react";
 import { ThemeProvider } from "styled-components/native";
 import theme from "./src/global/styles/theme";
-import Dashboard from "./src/screens/Dashboard";
+import Register from "./src/screens/Register";
 import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
 import { StatusBar, View } from "react-native";
@@ -46,7 +46,7 @@ export default function App() {
   return (
     <View onLayout={onLayoutView} style={{ flex: 1 }}>
       <ThemeProvider theme={theme}>
-        <Dashboard />
+        <Register />
       </ThemeProvider>
     </View>
   );
