@@ -2,17 +2,17 @@ import {
   Poppins_400Regular,
   Poppins_500Medium,
   Poppins_700Bold,
-  useFonts,
 } from "@expo-google-fonts/poppins";
+import { NavigationContainer } from "@react-navigation/native";
+import * as Font from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
 import React, { useCallback, useEffect, useState } from "react";
+import { View } from "react-native";
+import "react-native-gesture-handler";
 import { ThemeProvider } from "styled-components/native";
 import theme from "./src/global/styles/theme";
-import Register from "./src/screens/Register";
-import * as SplashScreen from "expo-splash-screen";
-import * as Font from "expo-font";
-import { StatusBar, View } from "react-native";
-import CategorySelectorModal from "./src/screens/CategorySelectorModal";
-
+import AppRoutes from "./src/routes/app.routes";
+import "react-native-gesture-handler";
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
   useEffect(() => {
@@ -47,7 +47,9 @@ export default function App() {
   return (
     <View onLayout={onLayoutView} style={{ flex: 1 }}>
       <ThemeProvider theme={theme}>
-        <Register />
+        <NavigationContainer>
+          <AppRoutes />
+        </NavigationContainer>
       </ThemeProvider>
     </View>
   );
