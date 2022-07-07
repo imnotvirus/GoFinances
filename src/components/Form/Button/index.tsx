@@ -7,7 +7,7 @@ import { ButtonProps } from "./types";
 const Button: React.FC<ButtonProps> = ({ title, ...rest }) => {
   return (
     <Container {...rest}>
-      <Title>Button</Title>
+      <Title>{title}</Title>
     </Container>
   );
 };

@@ -11,6 +11,7 @@ import Register from "./src/screens/Register";
 import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
 import { StatusBar, View } from "react-native";
+import CategorySelectorModal from "./src/screens/CategorySelectorModal";
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
