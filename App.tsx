@@ -13,6 +13,7 @@ import { ThemeProvider } from "styled-components/native";
 import theme from "./src/global/styles/theme";
 import AppRoutes from "./src/routes/app.routes";
 import "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
   useEffect(() => {
@@ -45,12 +46,14 @@ export default function App() {
   }
 
   return (
-    <View onLayout={onLayoutView} style={{ flex: 1 }}>
-      <ThemeProvider theme={theme}>
-        <NavigationContainer>
-          <AppRoutes />
-        </NavigationContainer>
-      </ThemeProvider>
-    </View>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <View onLayout={onLayoutView} style={{ flex: 1 }}>
+        <ThemeProvider theme={theme}>
+          <NavigationContainer>
+            <AppRoutes />
+          </NavigationContainer>
+        </ThemeProvider>
+      </View>
+    </GestureHandlerRootView>
   );
 }

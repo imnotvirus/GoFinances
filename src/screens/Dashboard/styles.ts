@@ -7,6 +7,7 @@ import {
 } from "react-native-iphone-x-helper";
 import { FlatList, FlatListProps } from "react-native";
 import { DataListProps } from "./types";
+import { BorderlessButton } from "react-native-gesture-handler";
 
 export const Container = styled.View`
   flex: 1;
@@ -88,3 +89,7 @@ export const TransactionList = styled(
     paddingBottom: getBottomSpace(),
   },
 })``;
+
+export const LogoutButton = styled(
+  BorderlessButton as new (props: any) => BorderlessButton
+)``;

@@ -1,4 +1,5 @@
 import React from "react";
+import { BorderlessButton } from "react-native-gesture-handler";
 
 import HighlightCard from "../../components/HighlightCard";
 import TransactionCard from "../../components/TransactionCard";
@@ -7,6 +8,7 @@ import {
   Header,
   HighlightCards,
   Icon,
+  LogoutButton,
   Photo,
   Title,
   Transaction,
@@ -71,7 +73,9 @@ const Dashboard: React.FC = () => {
               <UserName>Luiz</UserName>
             </User>
           </UserInfo>
-          <Icon name="power" />
+          <LogoutButton onPress={() => {}}>
+            <Icon name="power" />
+          </LogoutButton>
         </UserWrapper>
       </Header>
       <HighlightCards>

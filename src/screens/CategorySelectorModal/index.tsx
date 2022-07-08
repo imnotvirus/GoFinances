@@ -1,5 +1,6 @@
 import React from "react";
 import { FlatList, Text } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Button from "../../components/Form/Button";
 import { categories } from "../../utils/categories";
 
@@ -21,29 +22,31 @@ const CategorySelectorModal: React.FC<CategorySelectorModalProps> = ({
   setCategory,
 }) => {
   return (
-    <Container>
-      <Header>
-        <Title>Categoria</Title>
-      </Header>
-      <FlatList
-        data={categories}
-        style={{ flex: 1, width: "100%" }}
-        keyExtractor={(item) => item.key}
-        ItemSeparatorComponent={Separator}
-        renderItem={({ item }) => (
-          <Category
-            onPress={() => setCategory(item)}
-            isSelected={category.key === item.key}
-          >
-            <Icon name={item.icon} />
-            <Name>{item.name}</Name>
-          </Category>
-        )}
-      />
-      <Footer>
-        <Button title="Cadastrar" onPress={closeSelectCategory} />
-      </Footer>
-    </Container>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Container>
+        <Header>
+          <Title>Categoria</Title>
+        </Header>
+        <FlatList
+          data={categories}
+          style={{ flex: 1, width: "100%" }}
+          keyExtractor={(item) => item.key}
+          ItemSeparatorComponent={Separator}
+          renderItem={({ item }) => (
+            <Category
+              onPress={() => setCategory(item)}
+              isSelected={category.key === item.key}
+            >
+              <Icon name={item.icon} />
+              <Name>{item.name}</Name>
+            </Category>
+          )}
+        />
+        <Footer>
+          <Button title="Cadastrar" onPress={closeSelectCategory} />
+        </Footer>
+      </Container>
+    </GestureHandlerRootView>
   );
 };
 
