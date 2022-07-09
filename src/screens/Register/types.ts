@@ -1,3 +1,6 @@
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import { AppRoutesParamList } from "../../routes/app.routes";
+
 export interface RegisterProps {}
 export interface Category {
   name: string;
@@ -6,3 +9,11 @@ export interface Category {
 export interface FormDataProps {
   [name: string]: any;
 }
+export interface TransactionType {
+  name: string;
+  amount: string;
+  category: string;
+  type: string;
+}
+export interface RegisterNavigationProp
+  extends BottomTabNavigationProp<AppRoutesParamList, "Cadastrar"> {}

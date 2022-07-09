@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import uuid from "react-native-uuid";
+
 import { Alert, Keyboard, Modal, TouchableWithoutFeedback } from "react-native";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -17,7 +19,15 @@ import {
   Title,
   TransactionsType,
 } from "./styles";
-import { Category, FormDataProps, RegisterProps } from "./types";
+import {
+  Category,
+  FormDataProps,
+  RegisterNavigationProp,
+  RegisterProps,
+  TransactionType,
+} from "./types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 
 const schema = Yup.object()
   .shape({
@@ -28,6 +38,7 @@ const schema = Yup.object()
       .required("Valor é obrigatório"),
   })
   .required();
+const dataKey = "@GoFinances:transaction";
 
 const Register: React.FC<RegisterProps> = (props) => {
   const [transactionType, setTransactionType] = useState("");
@@ -57,11 +68,12 @@ const Register: React.FC<RegisterProps> = (props) => {
     control,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     resolver: yupResolver(schema),
   });
-
-  const handleRegister = (form: FormDataProps) => {
+  const navigation = useNavigation<RegisterNavigationProp>();
+  const handleRegister = async (form: FormDataProps) => {
     if (!transactionType)
       return Alert.alert("Erro", "Selecione o tipo de transação");
 
@@ -69,14 +81,49 @@ const Register: React.FC<RegisterProps> = (props) => {
       return Alert.alert("Erro", "Selecione uma categoria");
 
     const data = {
+      id: String(uuid.v4()),
       name: form.name,
       amount: form.amount,
       category: category.key,
       type: transactionType,
+      date: new Date(),
     };
+    try {
+      const dataLocal: TransactionType[] =
+        (await AsyncStorage.getItem(dataKey).then(
+          (result) => result && JSON.parse(result)
+        )) ?? [];
 
-    console.log(data);
+      dataLocal.push(data);
+      await AsyncStorage.setItem(dataKey, JSON.stringify(dataLocal));
+      Alert.alert("Cadastro realizado com sucesso");
+      reset();
+      setCategory({
+        key: "category",
+        name: "Categoria",
+      });
+      setTransactionType("");
+      navigation.navigate("Listagem");
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Erro", "Não foi possível salvar a transação");
+    }
   };
+
+  async function init() {
+    const dataLocal: TransactionType[] =
+      (await AsyncStorage.getItem(dataKey).then(
+        (result) => result && JSON.parse(result)
+      )) ?? [];
+
+    console.log(dataLocal);
+  }
+  const removeAll = async () => {
+    await AsyncStorage.removeItem(dataKey);
+  };
+  useEffect(() => {
+    init();
+  }, []);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

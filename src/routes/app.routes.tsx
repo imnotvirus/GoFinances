@@ -7,7 +7,13 @@ import { useTheme } from "styled-components/native";
 import { Platform } from "react-native";
 import {} from "react-native-gesture-handler";
 
-const { Navigator, Screen } = createBottomTabNavigator();
+export type AppRoutesParamList = {
+  Listagem: undefined;
+  Cadastrar: undefined;
+  Resumo: undefined;
+};
+
+const { Navigator, Screen } = createBottomTabNavigator<AppRoutesParamList>();
 
 const AppRoutes: React.FC = () => {
   const theme = useTheme();
@@ -25,7 +31,7 @@ const AppRoutes: React.FC = () => {
       }}
     >
       <Screen
-        name="Home"
+        name="Listagem"
         component={Dashboard}
         options={{
           tabBarIcon: ({ size, color }) => (
@@ -38,7 +44,7 @@ const AppRoutes: React.FC = () => {
         }}
       />
       <Screen
-        name="Register"
+        name="Cadastrar"
         component={Register}
         options={{
           tabBarIcon: ({ size, color }) => (
