@@ -14,6 +14,8 @@ export interface TransactionType {
   amount: string;
   category: string;
   type: string;
+  date: Date;
+  id: string;
 }
 export interface RegisterNavigationProp
   extends BottomTabNavigationProp<AppRoutesParamList, "Cadastrar"> {}

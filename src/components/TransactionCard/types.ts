@@ -1,16 +1,13 @@
-interface Category {
-  name: string;
-  icon: string;
-}
-export interface Data extends typeProps {
+export interface Data {
   title: string;
   amount: string;
-  category: Category;
+  category: string;
   date: string;
+  type: string;
 }
 export interface TransactionCardProps {
   data: Data;
 }
 export interface typeProps {
-  type: "positive" | "negative";
+  type: "up" | "down";
 }

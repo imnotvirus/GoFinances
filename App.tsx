@@ -1,3 +1,6 @@
+import "react-native-gesture-handler";
+import "intl";
+import "intl/locale-data/jsonp/pt-BR";
 import {
   Poppins_400Regular,
   Poppins_500Medium,
@@ -8,11 +11,9 @@ import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
-import "react-native-gesture-handler";
 import { ThemeProvider } from "styled-components/native";
 import theme from "./src/global/styles/theme";
 import AppRoutes from "./src/routes/app.routes";
-import "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);

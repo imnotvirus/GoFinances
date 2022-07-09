@@ -110,21 +110,6 @@ const Register: React.FC<RegisterProps> = (props) => {
     }
   };
 
-  async function init() {
-    const dataLocal: TransactionType[] =
-      (await AsyncStorage.getItem(dataKey).then(
-        (result) => result && JSON.parse(result)
-      )) ?? [];
-
-    console.log(dataLocal);
-  }
-  const removeAll = async () => {
-    await AsyncStorage.removeItem(dataKey);
-  };
-  useEffect(() => {
-    init();
-  }, []);
-
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <Container>

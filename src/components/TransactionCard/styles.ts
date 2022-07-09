@@ -19,7 +19,7 @@ export const Amount = styled.Text<typeProps>`
   font-family: ${({ theme }) => theme.fonts.regular};
   margin-top: 2px;
   color: ${({ theme, type }) =>
-    type === "positive" ? theme.colors.success : theme.colors.attention};
+    type === "up" ? theme.colors.success : theme.colors.attention};
 `;
 export const Footer = styled.View`
   flex-direction: row;
