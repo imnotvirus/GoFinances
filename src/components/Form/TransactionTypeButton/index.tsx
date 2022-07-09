@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, TouchableOpacity } from "react-native";
 
-import { Container, Icon, Title } from "./styles";
+import { Button, Container, Icon, Title } from "./styles";
 import { TransactionTypeButtonProps } from "./types";
 
 const icons = {
@@ -16,9 +16,11 @@ const TransactionTypeButton: React.FC<TransactionTypeButtonProps> = ({
   ...rest
 }) => {
   return (
-    <Container isActive={isActive} type={type} {...rest}>
-      <Icon name={icons[type]} type={type} />
-      <Title>{title}</Title>
+    <Container isActive={isActive} type={type}>
+      <Button {...rest}>
+        <Icon name={icons[type]} type={type} />
+        <Title>{title}</Title>
+      </Button>
     </Container>
   );
 };

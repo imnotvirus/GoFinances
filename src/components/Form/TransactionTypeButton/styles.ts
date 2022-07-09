@@ -1,32 +1,41 @@
-import { TouchableOpacity } from "react-native";
+import { RectButton } from "react-native-gesture-handler";
 import styled, { css } from "styled-components/native";
 import {
-  ContainerTransactionTypeButtonProps,
+  ContainerProps,
   IconButtonTypeProps,
   TransactionTypeButtonProps,
 } from "./types";
 import { Feather } from "@expo/vector-icons";
 import { RFValue } from "react-native-responsive-fontsize";
+import { TouchableOpacity } from "react-native";
 
-export const Container = styled(
-  TouchableOpacity
-)<ContainerTransactionTypeButtonProps>`
+export const Container = styled.View<ContainerProps>`
   width: 48%;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  border: 1.5px solid ${({ theme }) => theme.colors.text};
+
+  border-width: ${({ isActive }) => (isActive ? 0 : 1.5)}px;
+  border-style: solid;
+  border-color: ${({ theme }) => theme.colors.text};
   border-radius: 5px;
 
-  ${({ isActive, theme, type }) =>
+  ${({ isActive, type }) =>
     isActive &&
+    type === "up" &&
     css`
-      background-color: ${type === "up"
-        ? theme.colors.success_light
-        : theme.colors.attention_light};
-      border: 0;
+      background-color: ${({ theme }) => theme.colors.success_light};
     `}
 
+  ${({ isActive, type }) =>
+    isActive &&
+    type === "down" &&
+    css`
+      background-color: ${({ theme }) => theme.colors.attention_light};
+    `}
+`;
+
+export const Button = styled(RectButton)`
+  align-items: center;
+  flex-direction: row;
+  justify-content: center;
   padding: 16px;
 `;
 
