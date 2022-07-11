@@ -1,15 +1,16 @@
-import React from 'react';
-import { Text } from 'react-native';
+import React from "react";
+import { Text } from "react-native";
 
-import { Container } from './styles';
-import { HistoryCardProps } from './types';
+import { Container, Title, Amount } from "./styles";
+import { HistoryCardProps } from "./types";
 
-const HistoryCard: React.FC<HistoryCardProps> = (props) => {
+const HistoryCard: React.FC<HistoryCardProps> = ({ title, amount, color }) => {
   return (
-    <Container>
-        <Text>HistoryCard</Text>
+    <Container color={color}>
+      <Title>{title}</Title>
+      <Amount>{amount}</Amount>
     </Container>
   );
-}
+};
 
 export default HistoryCard;
