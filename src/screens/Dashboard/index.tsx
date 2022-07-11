@@ -3,6 +3,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
 
 import HighlightCard from "../../components/HighlightCard";
+import { typeProps } from "../../components/HighlightCard/types";
 import TransactionCard from "../../components/TransactionCard";
 import { TransactionType } from "../Register/types";
 import {
@@ -25,8 +26,50 @@ import { DataListProps } from "./types";
 
 const dataKey = "@GoFinances:transaction";
 
+interface data {
+  amount: string;
+  lastTransaction: string;
+}
+
+interface HighlightData {
+  entries: data;
+  expensive: data;
+  total: data;
+}
+
 const Dashboard: React.FC = () => {
   const [data, setData] = useState<DataListProps[]>([]);
+
+  const toReal = (value: number | string) => {
+    return Number(value).toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+  };
+
+  const [highlightData, setHighlightData] = useState<HighlightData>({
+    entries: { amount: toReal(0), lastTransaction: "" },
+    expensive: { amount: toReal(0), lastTransaction: "" },
+    total: { amount: toReal(0), lastTransaction: "" },
+  });
+  const getLastTransaction = (
+    collection: TransactionType[],
+    { type }: typeProps
+  ) => {
+    return Intl.DateTimeFormat("pt-BR", {
+      day: "2-digit",
+      month: "long",
+    }).format(
+      new Date(
+        Math.max.apply(
+          Math,
+          collection
+            .filter((transaction) => transaction.type === type)
+            .map((transaction) => new Date(transaction.date).getTime())
+        )
+      )
+    );
+  };
 
   const getItens = async () => {
     const dataLocal: TransactionType[] =
@@ -34,14 +77,21 @@ const Dashboard: React.FC = () => {
         (result) => result && JSON.parse(result)
       )) ?? [];
 
+    let entriesTotal = 0;
+    let expensiveTotal = 0;
     const formattedData: DataListProps[] = dataLocal.map((transaction) => {
-      const amount = Number(transaction.amount).toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-      });
+      if (transaction.type === "up") {
+        entriesTotal += Number(transaction.amount);
+      }
+      if (transaction.type === "down") {
+        expensiveTotal += Number(transaction.amount);
+      }
+
+      const amount = toReal(transaction.amount);
+
       const date = Intl.DateTimeFormat("pt-BR", {
         day: "2-digit",
-        month: "2-digit",
+        month: "long",
         year: "2-digit",
       }).format(new Date(transaction.date));
 
@@ -54,7 +104,40 @@ const Dashboard: React.FC = () => {
         category: transaction.category,
       };
     });
+
+    const lastTransactionEntries = getLastTransaction(dataLocal, {
+      type: "up",
+    });
+
+    const lastTransactionExpensive = getLastTransaction(dataLocal, {
+      type: "down",
+    });
+
     setData(formattedData);
+    const total = entriesTotal - expensiveTotal;
+    setHighlightData({
+      entries: {
+        amount: entriesTotal.toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        }),
+        lastTransaction: `Ultima entrada dia ${lastTransactionEntries}`,
+      },
+      expensive: {
+        amount: expensiveTotal.toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        }),
+        lastTransaction: `Ultima saída saída ${lastTransactionExpensive}`,
+      },
+      total: {
+        amount: total.toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        }),
+        lastTransaction: `Ultima saída lastTransactionEntries`,
+      },
+    });
   };
 
   useFocusEffect(
@@ -63,42 +146,6 @@ const Dashboard: React.FC = () => {
     }, [])
   );
 
-  // const data: DataListProps[] = [
-  //   {
-  //     id: "044ebb49-660a-4418-843a-b3b49aaebcaf",
-  //     type: "positive",
-  //     title: "Desenvolvimento de site",
-  //     amount: "R$ 12.000,00",
-  //     category: {
-  //       icon: "dollar-sign",
-  //       name: "Vendas",
-  //     },
-  //     date: "13/04/2020",
-  //   },
-  //   {
-  //     id: "59409246-7f7d-48e4-a62c-921fbcaac70e",
-  //     type: "negative",
-  //     title: "Hamburgueria Pizzy",
-  //     amount: "R$ 59,00",
-  //     category: {
-  //       icon: "coffee",
-  //       name: "Alimentação",
-  //     },
-  //     date: "10/04/2020",
-  //   },
-  //   {
-  //     id: "af72beff-2885-40a2-b654-01b691d93c6a",
-  //     type: "negative",
-
-  //     title: "Aluguel do apartamento",
-  //     amount: "R$ 1.200,00",
-  //     category: {
-  //       icon: "shopping-bag",
-  //       name: "Casa",
-  //     },
-  //     date: "10/04/2020",
-  //   },
-  // ];
   return (
     <Container>
       <Header>
@@ -122,20 +169,20 @@ const Dashboard: React.FC = () => {
       <HighlightCards>
         <HighlightCard
           title="entradas"
-          amount="R$ 17.400,00"
-          lastTransaction="Última entrada 13 de abril"
+          amount={highlightData.entries.amount}
+          lastTransaction={highlightData.entries.lastTransaction}
           type="up"
         />
         <HighlightCard
           title="Saídas"
-          amount="R$ 1.259,00"
-          lastTransaction="Última saída 03 de abril"
+          amount={highlightData.expensive.amount}
+          lastTransaction={highlightData.expensive.lastTransaction}
           type="down"
         />
         <HighlightCard
           title="Total"
-          amount="R$ 16.141,00"
-          lastTransaction="01 a 06 de abril"
+          amount={highlightData.total.amount}
+          lastTransaction={highlightData.total.lastTransaction}
           type="total"
         />
       </HighlightCards>

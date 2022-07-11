@@ -6,6 +6,7 @@ import Register from "../screens/Register";
 import { useTheme } from "styled-components/native";
 import { Platform } from "react-native";
 import {} from "react-native-gesture-handler";
+import Resume from "../screens/Resume";
 
 export type AppRoutesParamList = {
   Listagem: undefined;
@@ -54,7 +55,7 @@ const AppRoutes: React.FC = () => {
       />
       <Screen
         name="Resumo"
-        component={Register}
+        component={Resume}
         options={{
           tabBarIcon: ({ size, color }) => (
             <MaterialIcons name="pie-chart" size={size} color={color} />
