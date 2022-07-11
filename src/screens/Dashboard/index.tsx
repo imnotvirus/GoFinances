@@ -113,6 +113,8 @@ const Dashboard: React.FC = () => {
       type: "down",
     });
 
+    const totalInterval = `de 01 a ${lastTransactionExpensive}`;
+
     setData(formattedData);
     const total = entriesTotal - expensiveTotal;
     setHighlightData({
@@ -135,7 +137,7 @@ const Dashboard: React.FC = () => {
           style: "currency",
           currency: "BRL",
         }),
-        lastTransaction: `Ultima saída lastTransactionEntries`,
+        lastTransaction: totalInterval,
       },
     });
   };
