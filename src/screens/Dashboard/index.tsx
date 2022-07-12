@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import HighlightCard from "../../components/HighlightCard";
 import { typeProps } from "../../components/HighlightCard/types";
 import TransactionCard from "../../components/TransactionCard";
+import toReal from "../../utils/toReal";
 import { TransactionType } from "../Register/types";
 import {
   Container,
@@ -39,13 +40,6 @@ interface HighlightData {
 
 const Dashboard: React.FC = () => {
   const [data, setData] = useState<DataListProps[]>([]);
-
-  const toReal = (value: number | string) => {
-    return Number(value).toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    });
-  };
 
   const [highlightData, setHighlightData] = useState<HighlightData>({
     entries: { amount: toReal(0), lastTransaction: "" },
@@ -119,24 +113,15 @@ const Dashboard: React.FC = () => {
     const total = entriesTotal - expensiveTotal;
     setHighlightData({
       entries: {
-        amount: entriesTotal.toLocaleString("pt-BR", {
-          style: "currency",
-          currency: "BRL",
-        }),
+        amount: toReal(entriesTotal),
         lastTransaction: `Ultima entrada dia ${lastTransactionEntries}`,
       },
       expensive: {
-        amount: expensiveTotal.toLocaleString("pt-BR", {
-          style: "currency",
-          currency: "BRL",
-        }),
+        amount: toReal(expensiveTotal),
         lastTransaction: `Ultima saída saída ${lastTransactionExpensive}`,
       },
       total: {
-        amount: total.toLocaleString("pt-BR", {
-          style: "currency",
-          currency: "BRL",
-        }),
+        amount: toReal(total),
         lastTransaction: totalInterval,
       },
     });
