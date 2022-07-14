@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { useFocusEffect } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
@@ -88,9 +89,11 @@ const Resume: React.FC<ResumeProps> = (props) => {
     setLoading(false);
   }, [selectedDate]);
 
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
+  useFocusEffect(
+    useCallback(() => {
+      loadData();
+    }, [loadData])
+  );
   return (
     <Container>
       <Header>
