@@ -1,8 +1,10 @@
 {
-  "displayName": "GoFinances",
+  "name": "gofinances",
+  "displayName": "gofinances",
   "expo": {
-    "name": "GoFinances",
-    "slug": "gofinaces",
+    "name": "gofinances",
+    "slug": "gofinances",
+    "scheme": "gofinances",
     "version": "1.0.0",
     "owner": "imnotvirus",
     "assetBundlePatterns": ["**/*"]

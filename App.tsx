@@ -15,6 +15,8 @@ import { ThemeProvider } from "styled-components/native";
 import theme from "./src/global/styles/theme";
 import AppRoutes from "./src/routes/app.routes";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import SignIn from "./src/screens/SignIn";
+import { AuthProvier } from "./src/context/auth";
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
   useEffect(() => {
@@ -56,7 +58,9 @@ export default function App() {
               backgroundColor="transparent"
               translucent
             />
-            <AppRoutes />
+            <AuthProvier>
+              <SignIn />
+            </AuthProvier>
           </NavigationContainer>
         </ThemeProvider>
       </View>

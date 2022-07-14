@@ -9,7 +9,7 @@ const SignInSocialButton: React.FC<SignInSocialButtonProps> = ({
   ...props
 }) => {
   return (
-    <Button>
+    <Button {...props}>
       <ImageContainer>
         <Svg />
       </ImageContainer>
