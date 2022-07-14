@@ -1,5 +1,5 @@
 import React from "react";
-import { Alert, Text } from "react-native";
+import { Alert, Platform, Text } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
 
 import GoogleSvg from "../../assets/google.svg";
@@ -20,7 +20,7 @@ import { SignInProps } from "./types";
 import { useAuth } from "../../context/auth";
 
 const SignIn: React.FC<SignInProps> = (props) => {
-  const { signInWithGoogle } = useAuth();
+  const { signInWithGoogle, signInWithApple } = useAuth();
 
   const handleSignInWithGoogle = async () => {
     try {
@@ -28,6 +28,14 @@ const SignIn: React.FC<SignInProps> = (props) => {
     } catch (error) {
       console.log(error);
       Alert.alert("Não foi possível conectar a conta Google");
+    }
+  };
+  const handleSignInWithApple = async () => {
+    try {
+      await signInWithApple();
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Não foi possível conectar a conta Apple");
     }
   };
 
@@ -49,7 +57,13 @@ const SignIn: React.FC<SignInProps> = (props) => {
             svg={GoogleSvg}
             onPress={handleSignInWithGoogle}
           />
-          <SignInSocialButton title="Entrar com Apple" svg={AppleSvg} />
+          {Platform.OS === "ios" && (
+            <SignInSocialButton
+              title="Entrar com Apple"
+              svg={AppleSvg}
+              onPress={handleSignInWithApple}
+            />
+          )}
         </FooterWrapper>
       </Footer>
     </Container>
