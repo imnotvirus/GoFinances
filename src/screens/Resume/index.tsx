@@ -7,6 +7,7 @@ import { RFValue } from "react-native-responsive-fontsize";
 import { useTheme } from "styled-components/native";
 import { VictoryPie } from "victory-native";
 import HistoryCard from "../../components/HistoryCard";
+import { useAuth } from "../../context/auth";
 import { categories } from "../../utils/categories";
 import toReal from "../../utils/toReal";
 import { TransactionType } from "../Register/types";
@@ -24,13 +25,14 @@ import {
 } from "./styles";
 import { CategoryData, ResumeProps } from "./types";
 
-const dataKey = "@GoFinances:transaction";
-
 const Resume: React.FC<ResumeProps> = (props) => {
   const [loading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [data, setData] = useState<CategoryData[]>([]);
+
   const theme = useTheme();
+  const { user } = useAuth();
+  const dataKey = `@GoFinances:transaction:userId&${user.id}`;
 
   const handleChangeDate = (action: "next" | "prev") => {
     if (action === "next") {

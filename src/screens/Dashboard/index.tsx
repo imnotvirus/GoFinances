@@ -29,8 +29,6 @@ import {
 } from "./styles";
 import { DataListProps } from "./types";
 
-const dataKey = "@GoFinances:transaction";
-
 interface data {
   amount: string;
   lastTransaction: string;
@@ -46,30 +44,13 @@ const Dashboard: React.FC = () => {
   const [data, setData] = useState<DataListProps[]>([]);
 
   const { user, signOut } = useAuth();
+  const dataKey = `@GoFinances:transaction:userId&${user.id}`;
 
   const [highlightData, setHighlightData] = useState<HighlightData>({
     entries: { amount: toReal(0), lastTransaction: "" },
     expensive: { amount: toReal(0), lastTransaction: "" },
     total: { amount: toReal(0), lastTransaction: "" },
   });
-  const getLastTransaction = (
-    collection: TransactionType[],
-    { type }: typeProps
-  ) => {
-    return Intl.DateTimeFormat("pt-BR", {
-      day: "2-digit",
-      month: "long",
-    }).format(
-      new Date(
-        Math.max.apply(
-          Math,
-          collection
-            .filter((transaction) => transaction.type === type)
-            .map((transaction) => new Date(transaction.date).getTime())
-        )
-      )
-    );
-  };
 
   const getItens = async () => {
     const dataLocal =
@@ -132,7 +113,10 @@ const Dashboard: React.FC = () => {
               .filter((item: TransactionType) => item.type === "down")
               .map((item: TransactionType) => new Date(item.date))
           ),
-          "PPP"
+          "PPP",
+          {
+            locale: ptBR,
+          }
         )
       : "";
 

@@ -28,6 +28,7 @@ import {
 } from "./types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
+import { useAuth } from "../../context/auth";
 
 const schema = Yup.object()
   .shape({
@@ -38,16 +39,16 @@ const schema = Yup.object()
       .required("Valor é obrigatório"),
   })
   .required();
-const dataKey = "@GoFinances:transaction";
 
 const Register: React.FC<RegisterProps> = (props) => {
-  const [transactionType, setTransactionType] = useState("");
+  const [transactionType, setTransactionType] = useState<"up" | "down">("up");
   const [visibleModal, setVisibleModal] = useState(false);
   const [category, setCategory] = useState<Category>({
     key: "category",
     name: "Categoria",
   });
-
+  const { user } = useAuth();
+  const dataKey = `@GoFinances:transaction:userId&${user.id}`;
   const handleTransactionType = (type: "up" | "down") => {
     setTransactionType(type);
   };
@@ -102,7 +103,7 @@ const Register: React.FC<RegisterProps> = (props) => {
         key: "category",
         name: "Categoria",
       });
-      setTransactionType("");
+      setTransactionType("up");
       navigation.navigate("Listagem");
     } catch (error) {
       console.log(error);
