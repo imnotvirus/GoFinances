@@ -8,6 +8,7 @@ import { Alert } from "react-native";
 import HighlightCard from "../../components/HighlightCard";
 import { typeProps } from "../../components/HighlightCard/types";
 import TransactionCard from "../../components/TransactionCard";
+import { useAuth } from "../../context/auth";
 import toReal from "../../utils/toReal";
 import { TransactionType } from "../Register/types";
 import {
@@ -43,6 +44,8 @@ interface HighlightData {
 
 const Dashboard: React.FC = () => {
   const [data, setData] = useState<DataListProps[]>([]);
+
+  const { user, signOut } = useAuth();
 
   const [highlightData, setHighlightData] = useState<HighlightData>({
     entries: { amount: toReal(0), lastTransaction: "" },
@@ -192,15 +195,15 @@ const Dashboard: React.FC = () => {
           <UserInfo>
             <Photo
               source={{
-                uri: "https://avatars.githubusercontent.com/u/11259073?v=4",
+                uri: user.photo ?? `https://i.pravatar.cc/150?u=${user.name}`,
               }}
             />
             <User>
               <UserGreeting>Olá,</UserGreeting>
-              <UserName>Luiz</UserName>
+              <UserName>{user.name}</UserName>
             </User>
           </UserInfo>
-          <LogoutButton onPress={() => {}}>
+          <LogoutButton onPress={signOut}>
             <Icon name="power" />
           </LogoutButton>
         </UserWrapper>

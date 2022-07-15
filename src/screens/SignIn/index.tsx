@@ -1,5 +1,5 @@
-import React from "react";
-import { Alert, Platform, Text } from "react-native";
+import React, { useState } from "react";
+import { ActivityIndicator, Alert, Platform, Text } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
 
 import GoogleSvg from "../../assets/google.svg";
@@ -18,22 +18,29 @@ import {
 } from "./styles";
 import { SignInProps } from "./types";
 import { useAuth } from "../../context/auth";
+import { useTheme } from "styled-components";
 
 const SignIn: React.FC<SignInProps> = (props) => {
+  const [isLoading, setIsLoading] = useState(false);
   const { signInWithGoogle, signInWithApple } = useAuth();
-
+  const theme = useTheme();
   const handleSignInWithGoogle = async () => {
     try {
+      setIsLoading(true);
       await signInWithGoogle();
     } catch (error) {
+      setIsLoading(false);
       console.log(error);
       Alert.alert("Não foi possível conectar a conta Google");
     }
   };
   const handleSignInWithApple = async () => {
     try {
+      setIsLoading(true);
       await signInWithApple();
     } catch (error) {
+      setIsLoading(false);
+
       console.log(error);
       Alert.alert("Não foi possível conectar a conta Apple");
     }
@@ -63,6 +70,9 @@ const SignIn: React.FC<SignInProps> = (props) => {
               svg={AppleSvg}
               onPress={handleSignInWithApple}
             />
+          )}
+          {isLoading && (
+            <ActivityIndicator color={theme.colors.primary} size="large" />
           )}
         </FooterWrapper>
       </Footer>
