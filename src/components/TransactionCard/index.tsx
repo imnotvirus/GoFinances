@@ -14,10 +14,13 @@ import {
 } from "./styles";
 import { TransactionCardProps } from "./types";
 
-const TransactionCard: React.FC<TransactionCardProps> = ({ data }) => {
+const TransactionCard: React.FC<TransactionCardProps> = ({
+  data,
+  onLongPress,
+}) => {
   const category = categories.find((item) => item.key === data.category);
   return (
-    <Container>
+    <Container onLongPress={() => onLongPress(data)}>
       <Title>{data.title}</Title>
       <Amount type={data.type}>
         {data.type === "down" && "- "}

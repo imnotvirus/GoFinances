@@ -1,6 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
-import React, { useCallback, useEffect, useState } from "react";
+import { format, max } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import React, { useCallback, useState } from "react";
+import { Alert } from "react-native";
 
 import HighlightCard from "../../components/HighlightCard";
 import { typeProps } from "../../components/HighlightCard/types";
@@ -66,65 +69,114 @@ const Dashboard: React.FC = () => {
   };
 
   const getItens = async () => {
-    const dataLocal: TransactionType[] =
+    const dataLocal =
       (await AsyncStorage.getItem(dataKey).then(
         (result) => result && JSON.parse(result)
       )) ?? [];
 
     let entriesTotal = 0;
     let expensiveTotal = 0;
-    const formattedData: DataListProps[] = dataLocal.map((transaction) => {
-      if (transaction.type === "up") {
-        entriesTotal += Number(transaction.amount);
+    const formattedData: DataListProps[] = dataLocal.map(
+      (transaction: TransactionType) => {
+        if (transaction.type === "up") {
+          entriesTotal += Number(transaction.amount);
+        }
+        if (transaction.type === "down") {
+          expensiveTotal += Number(transaction.amount);
+        }
+
+        const amount = toReal(transaction.amount);
+
+        const date = Intl.DateTimeFormat("pt-BR", {
+          day: "2-digit",
+          month: "long",
+          year: "2-digit",
+        }).format(new Date(transaction.date));
+
+        return {
+          id: transaction.id,
+          title: transaction.name,
+          amount,
+          date,
+          type: String(transaction.type),
+          category: transaction.category,
+        };
       }
-      if (transaction.type === "down") {
-        expensiveTotal += Number(transaction.amount);
-      }
+    );
 
-      const amount = toReal(transaction.amount);
+    const lastTransactionEntries = dataLocal.some(
+      (item: TransactionType) => item.type === "up"
+    )
+      ? format(
+          max(
+            dataLocal
+              .filter((item: TransactionType) => item.type === "up")
+              .map((item: TransactionType) => new Date(item.date))
+          ),
+          "PP",
+          {
+            locale: ptBR,
+          }
+        )
+      : "";
 
-      const date = Intl.DateTimeFormat("pt-BR", {
-        day: "2-digit",
-        month: "long",
-        year: "2-digit",
-      }).format(new Date(transaction.date));
+    const lastTransactionExpensive = dataLocal.some(
+      (item: TransactionType) => item.type === "down"
+    )
+      ? format(
+          max(
+            dataLocal
+              .filter((item: TransactionType) => item.type === "down")
+              .map((item: TransactionType) => new Date(item.date))
+          ),
+          "PPP"
+        )
+      : "";
 
-      return {
-        id: transaction.id,
-        title: transaction.name,
-        amount,
-        date,
-        type: String(transaction.type),
-        category: transaction.category,
-      };
-    });
-
-    const lastTransactionEntries = getLastTransaction(dataLocal, {
-      type: "up",
-    });
-
-    const lastTransactionExpensive = getLastTransaction(dataLocal, {
-      type: "down",
-    });
-
-    const totalInterval = `de 01 a ${lastTransactionExpensive}`;
+    const totalInterval =
+      lastTransactionExpensive === ""
+        ? ""
+        : `de 01 a ${lastTransactionExpensive}`;
 
     setData(formattedData);
     const total = entriesTotal - expensiveTotal;
     setHighlightData({
       entries: {
         amount: toReal(entriesTotal),
-        lastTransaction: `Ultima entrada dia ${lastTransactionEntries}`,
+        lastTransaction:
+          lastTransactionEntries === ""
+            ? ""
+            : `Ultima entrada dia ${lastTransactionEntries}`,
       },
       expensive: {
         amount: toReal(expensiveTotal),
-        lastTransaction: `Ultima saída saída ${lastTransactionExpensive}`,
+        lastTransaction:
+          lastTransactionExpensive === ""
+            ? ""
+            : `Ultima saída saída ${lastTransactionExpensive}`,
       },
       total: {
         amount: toReal(total),
         lastTransaction: totalInterval,
       },
     });
+  };
+
+  const onLongPress = (arg0: DataListProps) => {
+    Alert.alert("Atenção", `Deseja excluir o item ${arg0.title}?`, [
+      {
+        text: "Cancelar",
+        style: "cancel",
+      },
+      {
+        text: "Excluir",
+        onPress: () => {
+          const newData = data.filter((item) => item.id !== arg0.id);
+          AsyncStorage.setItem(dataKey, JSON.stringify(newData));
+          getItens();
+        },
+      },
+    ]);
   };
 
   useFocusEffect(
@@ -178,7 +230,9 @@ const Dashboard: React.FC = () => {
         <TransactionList
           data={data}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <TransactionCard data={item} />}
+          renderItem={({ item }) => (
+            <TransactionCard data={item} onLongPress={onLongPress} />
+          )}
         />
       </Transaction>
     </Container>

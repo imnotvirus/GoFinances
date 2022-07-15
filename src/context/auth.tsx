@@ -1,11 +1,15 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import * as AuthSession from "expo-auth-session";
 import * as AppleAuthentication from "expo-apple-authentication";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ActivityIndicator, Text, View } from "react-native";
+import { useTheme } from "styled-components/native";
 interface IAuthContextData {
   user: User;
   signInWithGoogle: () => Promise<void>;
   signInWithApple: () => Promise<void>;
+  signOut: () => Promise<void>;
+  userStorageLoading: boolean;
 }
 
 interface User {
@@ -29,6 +33,9 @@ const AuthContext = createContext({} as IAuthContextData);
 
 const AuthProvier: React.FC = ({ children }) => {
   const [user, setUser] = useState<User>({} as User);
+  const [userStorageLoading, setUserStorageLoading] = useState(true);
+
+  const userStorageKey = "@gofinances:user";
 
   const signInWithGoogle = async () => {
     try {
@@ -53,7 +60,7 @@ const AuthProvier: React.FC = ({ children }) => {
           photo: userInfo.picture,
         };
         setUser(info);
-        await AsyncStorage.setItem("@gofinances:user", JSON.stringify(info));
+        await AsyncStorage.setItem(userStorageKey, JSON.stringify(info));
       }
     } catch (error: any) {
       throw new Error(error);
@@ -77,15 +84,49 @@ const AuthProvier: React.FC = ({ children }) => {
           photo: undefined,
         };
         setUser(info);
-        await AsyncStorage.setItem("@gofinances:user", JSON.stringify(info));
+        await AsyncStorage.setItem(userStorageKey, JSON.stringify(info));
       }
     } catch (error: any) {
       throw new Error(error);
     }
   };
 
+  const signOut = async () => {
+    setUser({} as User);
+    await AsyncStorage.removeItem(userStorageKey);
+  };
+
+  useEffect(() => {
+    const loadUserStorageDate = async () => {
+      const data = await AsyncStorage.getItem("@gofinances:user");
+      if (data) {
+        const userLogged = JSON.parse(data) as User;
+        setUser(userLogged);
+      }
+      setUserStorageLoading(false);
+    };
+    loadUserStorageDate();
+  }, []);
+
+  const theme = useTheme();
+  if (userStorageLoading) {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <ActivityIndicator color={theme.colors.primary} size="large" />
+      </View>
+    );
+  }
+
   return (
-    <AuthContext.Provider value={{ user, signInWithGoogle, signInWithApple }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        signInWithGoogle,
+        signInWithApple,
+        signOut,
+        userStorageLoading,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -93,6 +134,9 @@ const AuthProvier: React.FC = ({ children }) => {
 
 const useAuth = () => {
   const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used inside AuthProvider");
+  }
   return context;
 };
 export { AuthProvier, useAuth };

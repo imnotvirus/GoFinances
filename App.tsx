@@ -17,6 +17,7 @@ import AppRoutes from "./src/routes/app.routes";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import SignIn from "./src/screens/SignIn";
 import { AuthProvier } from "./src/context/auth";
+import { Routes } from "./src/routes";
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
   useEffect(() => {
@@ -52,16 +53,14 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View onLayout={onLayoutView} style={{ flex: 1 }}>
         <ThemeProvider theme={theme}>
-          <NavigationContainer>
-            <StatusBar
-              barStyle="light-content"
-              backgroundColor="transparent"
-              translucent
-            />
-            <AuthProvier>
-              <SignIn />
-            </AuthProvier>
-          </NavigationContainer>
+          <StatusBar
+            barStyle="light-content"
+            backgroundColor="transparent"
+            translucent
+          />
+          <AuthProvier>
+            <Routes />
+          </AuthProvier>
         </ThemeProvider>
       </View>
     </GestureHandlerRootView>

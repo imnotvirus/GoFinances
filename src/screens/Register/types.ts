@@ -13,7 +13,7 @@ export interface TransactionType {
   name: string;
   amount: string;
   category: string;
-  type: string;
+  type: "up" | "down";
   date: Date;
   id: string;
 }
